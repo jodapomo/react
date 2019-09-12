@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
 import classes from './App.css';
 // import Radium, { StyleRoot } from "radium";
-import Person from './Person/Person'
+import Persons from '../components/Persons/Persons'
+import Cockpit from "../components/Cockpit/Cockpit";
 
 class App extends Component {
+
+  constructor(props) {
+    super(props);
+    console.log('[App.js] constructor');    
+  }
 
   state = {
     persons: [
@@ -12,6 +18,15 @@ class App extends Component {
       { id: 'y56yt', name: 'John', age: 27 },
     ],
     showPersons: false,
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    console.log('[App.js] getDerivedStateFromProps', props);
+    return state;
+  }
+  
+  componentDidMount() {
+    console.log('[App.js] componentDidMount');
   }
 
   togglePersonsHandler = () => {
@@ -44,7 +59,7 @@ class App extends Component {
   }
 
   render() {
-
+    console.log('[App.js] render');  
     // const style = {
     //   backgroundColor: 'green',
     //   color: 'white',
@@ -59,44 +74,25 @@ class App extends Component {
     // }
 
     let persons = null;
-    let btnClass = '';
 
     if (this.state.showPersons) {
       persons = (
         <div className="">
-          {this.state.persons.map( (person, index) => {
-            return <Person
-              name={person.name}
-              age={person.age}
-              key={person.id}
-              click={() => this.deletePersonHandler(index)}
-              changed={(event) => this.nameChangeHandler(event, person.id)}
-            />
-          })}
+          <Persons
+            persons={this.state.persons}
+            clicked={this.deletePersonHandler}
+            changed={this.nameChangeHandler} />
         </div> 
       );
-      btnClass = classes.Red;
     }
-
-    const assignedClasses = []; 
-    if ( this.state.persons.length <= 2) {
-      assignedClasses.push( classes.red ); // ['red']
-    }
-    if ( this.state.persons.length <= 1) {
-      assignedClasses.push( classes.bold ); // ['red', 'bold']
-    }
-
 
     return (
       // <StyleRoot>
         <div className={classes.App}>
-          <h1>React App</h1>
-          <p className={assignedClasses.join(' ')}>This is really working!</p>
-          <button
-            onClick={this.togglePersonsHandler}
-            className={btnClass} >
-            Toggle Persons
-          </button>
+          <Cockpit 
+            showPersons={this.state.showPersons}
+            persons={this.state.persons}
+            clicked={this.togglePersonsHandler} />
           {persons}
         </div>
       // </StyleRoot>
